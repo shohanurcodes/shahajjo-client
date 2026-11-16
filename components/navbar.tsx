@@ -81,6 +81,7 @@ export function Navbar() {
 
   async function handleLogout() {
     setLoggingOut(true);
+    clearTokenCache();
     try {
       await signOut();
       clearTokenCache();

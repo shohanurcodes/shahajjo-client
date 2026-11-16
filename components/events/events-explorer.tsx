@@ -53,7 +53,9 @@ export function EventsExplorer() {
       setRefreshing(true);
     }
 
-    apiFetch<EventsResponse>(`/api/events/upcoming${queryString}`)
+    apiFetch<EventsResponse>(`/api/events/upcoming${queryString}`, {
+      auth: "none",
+    })
       .then((data) => {
         if (active) setEvents(data.events);
       })

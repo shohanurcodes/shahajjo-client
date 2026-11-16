@@ -20,7 +20,7 @@ export function RecentEvents() {
     setLoading(true);
     setError(null);
 
-    apiFetch<EventsResponse>("/api/events/upcoming?limit=6")
+    apiFetch<EventsResponse>("/api/events/upcoming?limit=6", { auth: "none" })
       .then((data) => {
         if (active) setEvents(data.events);
       })

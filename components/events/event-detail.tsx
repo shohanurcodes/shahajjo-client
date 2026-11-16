@@ -41,13 +41,16 @@ export function EventDetail({ eventId }: { eventId: string }) {
   const [joining, setJoining] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const [imageFailed, setImageFailed] = useState(false);
+  const signedIn = Boolean(session);
 
   const load = useCallback(() => {
     let active = true;
     setError(null);
     setNotFound(false);
 
-    apiFetch<EventResponse>(`/api/events/${eventId}`)
+    apiFetch<EventResponse>(`/api/events/${eventId}`, {
+      auth: signedIn ? "required" : "none",
+    })
       .then((data) => {
         if (active) setEvent(data.event);
       })
@@ -68,7 +71,7 @@ export function EventDetail({ eventId }: { eventId: string }) {
     return () => {
       active = false;
     };
-  }, [eventId]);
+  }, [eventId, signedIn]);
 
   // Re-run once the client session resolves so isOwner / isJoined are accurate.
   useEffect(() => load(), [load, attempt, session?.user?.id]);

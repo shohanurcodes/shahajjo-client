@@ -59,17 +59,43 @@ export async function getAuthToken(force = false): Promise<string | null> {
   }
 }
 
+type AuthMode = "required" | "optional" | "none";
+
 interface ApiOptions {
   method?: "GET" | "POST" | "PATCH" | "DELETE";
   body?: unknown;
+  /**
+   * "required" (default) fetches a Bearer token and fails fast when there is
+   * no session. "optional" only reuses an already-cached token, and "none"
+   * never sends one — both avoid probing /api/auth/token for signed-out
+   * visitors, which is what made logout log a 401 in the console.
+   */
+  auth?: AuthMode;
+}
+
+async function resolveToken(mode: AuthMode): Promise<string | null> {
+  if (mode === "none") return null;
+
+  if (tokenCache && tokenCache.expiresAt > Date.now()) {
+    return tokenCache.token;
+  }
+
+  // Public requests must stay quiet when signed out.
+  if (mode === "optional") return null;
+
+  return getAuthToken();
 }
 
 export async function apiFetch<T>(
   path: string,
   options: ApiOptions = {},
 ): Promise<T> {
-  const { method = "GET", body } = options;
-  const token = await getAuthToken();
+  const { method = "GET", body, auth = "required" } = options;
+  const token = await resolveToken(auth);
+
+  if (auth === "required" && !token) {
+    throw new ApiError("Please sign in to continue.", 401);
+  }
 
   const send = (bearer: string | null) =>
     fetch(`${API_URL}${path}`, {
@@ -87,11 +113,17 @@ export async function apiFetch<T>(
   try {
     response = await send(token);
 
-    if (response.status === 401) {
+    if (response.status === 401 && token) {
       clearTokenCache();
-      const freshToken = await getAuthToken(true);
-      if (freshToken) {
-        response = await send(freshToken);
+
+      if (auth === "required") {
+        const freshToken = await getAuthToken(true);
+        if (freshToken) {
+          response = await send(freshToken);
+        }
+      } else if (auth === "optional") {
+        // The cached token may have expired; public data is still readable.
+        response = await send(null);
       }
     }
   } catch {

@@ -47,15 +47,23 @@ export function GoogleButton({ label }: { label: string }) {
   }
 
   return (
-    <Button
-      type="button"
-      variant="outline"
-      className="w-full bg-background/60"
-      onClick={() => void handleClick()}
-    >
-      <GoogleMark />
-      {label}
-    </Button>
+    <div className="space-y-2">
+      <Button
+        type="button"
+        variant="outline"
+        className="w-full bg-background/60"
+        onClick={() => void handleClick()}
+      >
+        <GoogleMark />
+        {label}
+      </Button>
+      {!enabled && (
+        <p className="px-1 text-center text-[0.68rem] leading-relaxed text-muted-foreground">
+          Google sign-in is not configured in this environment yet. Use email and
+          password below.
+        </p>
+      )}
+    </div>
   );
 }
 

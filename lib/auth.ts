@@ -17,7 +17,7 @@ export const auth = betterAuth({
   secret:
     process.env.BETTER_AUTH_SECRET ??
     "development-only-secret-please-set-better-auth-secret",
-  database: mongodbAdapter(db, { client: mongoClient }),
+  database: mongodbAdapter(db, { client: mongoClient, transaction: false }),
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 6,

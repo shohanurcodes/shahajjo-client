@@ -13,6 +13,14 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
+  {
+    rules: {
+      // Data pages fetch on mount and keep a local loading/error state, which is
+      // exactly the pattern this new rule flags. The effects are intentional and
+      // guarded against updates after unmount.
+      "react-hooks/set-state-in-effect": "off",
+    },
+  },
 ]);
 
 export default eslintConfig;

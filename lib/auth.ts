@@ -70,12 +70,16 @@ export const auth = betterAuth({
     autoSignIn: true,
   },
 
-  // Google and GitHub account linking
+  // Google and GitHub account linking.
+  // Email verification is intentionally disabled for password accounts, so
+  // implicit linking relies on the verified email from the trusted OAuth
+  // provider instead. Different emails still cannot be linked.
   account: {
     accountLinking: {
       enabled: true,
       trustedProviders: ["google", "github"],
       allowDifferentEmails: false,
+      requireLocalEmailVerified: false,
     },
   },
 

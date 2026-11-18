@@ -23,25 +23,13 @@ function firstEnvValue(...names: string[]): string | undefined {
 }
 
 /**
- * The public flags are optional. They are only needed to hide a provider that
- * has credentials configured. When a flag is missing, credentials become the
- * source of truth so a fresh production deployment does not hide the buttons.
+ * Credentials are the single source of truth. The old NEXT_PUBLIC_*_AUTH_ENABLED
+ * flags are intentionally ignored: they were commonly copied as `false` into
+ * production env files and silently hid providers that were fully configured.
  */
-function isProviderEnabled(provider: SocialProvider): boolean {
-  const flag =
-    provider === "github"
-      ? process.env.NEXT_PUBLIC_GITHUB_AUTH_ENABLED
-      : process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED;
-
-  if (flag === undefined || flag.trim() === "") return true;
-  return flag.trim() === "true";
-}
-
 export function getSocialProviderConfig(
   provider: SocialProvider,
 ): SocialProviderConfig | null {
-  if (!isProviderEnabled(provider)) return null;
-
   const clientId =
     provider === "github"
       ? firstEnvValue(

@@ -1,6 +1,13 @@
 import type { ApiErrorPayload } from "@/lib/types";
 
-const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000").replace(
+// Vercel does not need NEXT_PUBLIC_API_URL: the production API has a stable
+// public URL. Local development still defaults to the Express server on 5000.
+const FALLBACK_API_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://shahajjo-server.onrender.com"
+    : "http://localhost:5000";
+
+const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? FALLBACK_API_URL).replace(
   /\/$/,
   "",
 );

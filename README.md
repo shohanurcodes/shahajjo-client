@@ -2,8 +2,9 @@
 
 Sahajjo is a community-driven platform for social service events in Dhaka. Neighbours can post a cleanup, a plantation drive, a donation collection or a winter relief programme, and everyone else can join in a couple of clicks.
 
-- **Live site:** <https://sahajjo.vercel.app> *(replace with the deployed URL after the first Vercel deploy)*
-- **API repository:** the Express 5 + MongoDB service lives in `../server-side`
+- **Live site:** <https://shahajjo-client.vercel.app>
+- **Client GitHub Repository:** <https://github.com/shohanurcodes/shahajjo-client>
+- **Server GitHub Repository:** <https://github.com/shohanurcodes/shahajjo-server>
 
 ## What you can do
 
@@ -14,7 +15,7 @@ Sahajjo is a community-driven platform for social service events in Dhaka. Neigh
 - **Keep your own calendar** of joined events, split into upcoming plans and events that already happened.
 - **Update your profile** — display name and photo — and see how many events you have created, joined and still have ahead.
 - **Switch between light and dark themes** anywhere in the app, with a responsive layout from phone to desktop.
-- **Sign in with email and password or Google** (Google activates when OAuth credentials are provided), with toast feedback for every success and failure.
+- **Sign in with email and password, GitHub, or Google** (social options activate when their OAuth credentials and public flags are provided), with toast feedback for every success and failure.
 
 ## Tech stack
 
@@ -47,10 +48,12 @@ Open <http://localhost:3000>. The Express API must be running separately on port
 | `MONGODB_URI` | MongoDB Atlas connection string, shared with the Express API |
 | `DB_NAME` | Database name (`sahajjo`) |
 | `NEXT_PUBLIC_API_URL` | Express API base URL (`http://localhost:5000` locally) |
+| `NEXT_PUBLIC_GITHUB_AUTH_ENABLED` | Set to `true` only after adding GitHub credentials |
+| `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` | GitHub OAuth credentials (optional) |
 | `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED` | Set to `true` only after adding Google credentials |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google OAuth credentials (optional) |
 
-Google sign-in is scaffolded but disabled by default. Without credentials the button explains that email/password should be used instead.
+GitHub and Google sign-in are optional and disabled by default. Without a matching public flag, the button explains that email/password should be used instead.
 
 ### Scripts
 

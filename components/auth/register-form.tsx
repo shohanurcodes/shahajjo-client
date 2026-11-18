@@ -56,8 +56,15 @@ export function RegisterForm() {
 
     const parsed = registerSchema.safeParse(form);
     if (!parsed.success) {
-      setFieldErrors(toFieldErrors(parsed.error));
-      toast.error("Please fix the highlighted fields before continuing.");
+      const fieldIssues = toFieldErrors(parsed.error);
+      setFieldErrors(fieldIssues);
+      const firstErrorMessage =
+        fieldIssues.password ||
+        fieldIssues.name ||
+        fieldIssues.email ||
+        fieldIssues.photoURL ||
+        "Please fix the highlighted fields before continuing.";
+      toast.error(firstErrorMessage);
       return;
     }
 

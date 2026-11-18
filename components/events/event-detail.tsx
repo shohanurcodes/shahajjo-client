@@ -359,11 +359,11 @@ export function EventDetail({ eventId }: { eventId: string }) {
                   disabled={joining}
                 >
                   {joining ? <Loader2 className="animate-spin" /> : <UsersRound />}
-                  {joining ? "Saving your spot..." : "Join this event"}
+                  {joining ? "Saving your spot..." : "Join Event"}
                 </Button>
               ) : (
                 <Button asChild size="lg" className="w-full">
-                  <Link href="/login">Log in to join</Link>
+                  <Link href="/login">Log in to Join Event</Link>
                 </Button>
               )}
 

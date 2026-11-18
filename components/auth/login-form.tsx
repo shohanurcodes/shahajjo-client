@@ -38,8 +38,13 @@ export function LoginForm() {
 
     const parsed = loginSchema.safeParse(form);
     if (!parsed.success) {
-      setFieldErrors(toFieldErrors(parsed.error));
-      toast.error("Please check your email and password.");
+      const fieldIssues = toFieldErrors(parsed.error);
+      setFieldErrors(fieldIssues);
+      const firstErrorMessage =
+        fieldIssues.email ||
+        fieldIssues.password ||
+        "Please check your email and password.";
+      toast.error(firstErrorMessage);
       return;
     }
 

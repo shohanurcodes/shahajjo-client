@@ -5,6 +5,7 @@ import { useState } from "react";
 import { ArrowUpRight, CalendarDays, MapPin, UsersRound } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { dayLabel, eventTypeTone, initials, isPastEvent, monthLabel } from "@/lib/format";
 import type { EventItem } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -124,13 +125,16 @@ export function EventCard({
             )}
           </div>
 
-          <Link
-            href={`/events/${event.id}`}
-            className="inline-flex items-center gap-1 text-xs font-semibold text-primary transition-colors hover:text-[var(--terracotta)]"
+          <Button
+            asChild
+            size="sm"
+            className="h-8 rounded-full px-3 text-xs font-semibold shadow-none"
           >
-            View event
-            <ArrowUpRight className="size-3.5" />
-          </Link>
+            <Link href={`/events/${event.id}`}>
+              View Event
+              <ArrowUpRight className="ml-1 size-3.5" />
+            </Link>
+          </Button>
         </div>
       </div>
     </article>

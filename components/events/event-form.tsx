@@ -129,8 +129,12 @@ export function EventForm({ mode, eventId, initial }: EventFormProps) {
           : "Event updated. Everyone will see the latest details.",
       );
 
-      const targetId = result.event?.id ?? eventId;
-      router.push(targetId ? `/events/${targetId}` : "/manage-events");
+      if (mode === "create") {
+        router.push("/events");
+      } else {
+        const targetId = result.event?.id ?? eventId;
+        router.push(targetId ? `/events/${targetId}` : "/manage-events");
+      }
       router.refresh();
     } catch (err: unknown) {
       if (err instanceof ApiError) {

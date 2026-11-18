@@ -138,37 +138,30 @@ export function Navbar() {
             </div>
           ) : user ? (
             <>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Link
-                    href="/profile"
-                    aria-label={`${displayName} — open profile`}
-                    className="rounded-full outline-none ring-offset-2 focus-visible:ring-2 focus-visible:ring-ring"
-                  >
-                    <Avatar className="size-9 border border-border/80 shadow-sm">
-                      <AvatarImage src={avatarSrc} alt={displayName} />
-                      <AvatarFallback className="bg-brand-soft text-xs font-semibold text-primary">
-                        {initials(displayName)}
-                      </AvatarFallback>
-                    </Avatar>
-                  </Link>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">
-                  <span className="font-medium">{displayName}</span>
-                </TooltipContent>
-              </Tooltip>
-
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="hidden gap-1.5 text-muted-foreground md:inline-flex"
-                    aria-label="Open account menu"
-                  >
-                    Account
-                  </Button>
-                </DropdownMenuTrigger>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        type="button"
+                        title={displayName}
+                        aria-label={`${displayName} — open menu`}
+                        className="rounded-full outline-none ring-offset-2 transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-ring"
+                      >
+                        <Avatar className="size-9 cursor-pointer border border-border/80 shadow-sm">
+                          <AvatarImage src={avatarSrc} alt={displayName} />
+                          <AvatarFallback className="bg-brand-soft text-xs font-semibold text-primary">
+                            {initials(displayName)}
+                          </AvatarFallback>
+                        </Avatar>
+                      </button>
+                    </DropdownMenuTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">
+                    <span className="font-medium">{displayName}</span>
+                  </TooltipContent>
+                </Tooltip>
+
                 <DropdownMenuContent align="end" className="w-60">
                   <DropdownMenuLabel className="flex flex-col gap-0.5">
                     <span className="truncate text-sm font-semibold text-foreground">
@@ -192,6 +185,7 @@ export function Navbar() {
                     variant="destructive"
                     disabled={loggingOut}
                     onSelect={() => void handleLogout()}
+                    className="cursor-pointer"
                   >
                     <LogOut />
                     Log out

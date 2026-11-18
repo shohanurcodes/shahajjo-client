@@ -47,13 +47,11 @@ Open <http://localhost:3000>. The Express API must be running separately on port
 | `NEXT_PUBLIC_APP_URL` | Same origin, used for metadata and auth client base URL |
 | `MONGODB_URI` | MongoDB Atlas connection string, shared with the Express API |
 | `DB_NAME` | Database name (`sahajjo`) |
-| `NEXT_PUBLIC_API_URL` | Express API base URL (`http://localhost:5000` locally) |
-| `NEXT_PUBLIC_GITHUB_AUTH_ENABLED` | Set to `true` only after adding GitHub credentials |
+| `NEXT_PUBLIC_API_URL` | Express API base URL (optional in production; defaults to `https://shahajjo-server.onrender.com`) |
 | `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET` | GitHub OAuth credentials (optional) |
-| `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED` | Set to `true` only after adding Google credentials |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google OAuth credentials (optional) |
 
-GitHub and Google sign-in are optional. A provider button is shown only when its public flag is `true` **and** both matching credentials are set; otherwise email/password is used.
+GitHub and Google sign-in are optional. A provider button is shown whenever both matching credentials are set; otherwise email/password is used. The legacy `NEXT_PUBLIC_GITHUB_AUTH_ENABLED` and `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED` flags are ignored so a copied `false` value cannot hide a configured provider.
 
 Register these callback URLs on the OAuth apps (`BETTER_AUTH_URL` decides which origin is used):
 
@@ -84,7 +82,7 @@ Every signed-in route lives under `app/(private)/` and is guarded on the server 
 ## Deploying
 
 1. Push this repository to GitHub.
-2. Import it into Vercel and set every variable from the table above. Point `NEXT_PUBLIC_API_URL` at the deployed Render service.
+2. Import it into Vercel and set the variables from the table above. Add the GitHub and Google credentials to enable social sign-in; `NEXT_PUBLIC_API_URL` is optional in production because the Render URL is the default.
 3. After the first deploy, set `BETTER_AUTH_URL` and `NEXT_PUBLIC_APP_URL` to the Vercel URL, then redeploy.
 4. On the API, set `BETTER_AUTH_JWKS_URL=https://<your-app>.vercel.app/api/auth/jwks` and add the Vercel origin to `CLIENT_ORIGINS`.
 5. In MongoDB Atlas, allow access from Vercel and Render.

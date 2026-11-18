@@ -5,6 +5,10 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
+import type {
+  SocialProvider,
+  SocialProviderAvailability,
+} from "@/lib/social-providers";
 
 function GoogleMark() {
   return (
@@ -43,31 +47,51 @@ function GitHubMark() {
 
 interface SocialAuthProps {
   label?: string;
-  defaultProvider?: "google" | "github";
+  defaultProvider?: SocialProvider;
+  providers: SocialProviderAvailability;
 }
 
-export function GoogleButton({ label = "Continue with Google" }: { label?: string }) {
-  return <SocialAuthButtons defaultProvider="google" label={label} />;
+export function GoogleButton({
+  label = "Continue with Google",
+  providers,
+}: Pick<SocialAuthProps, "label" | "providers">) {
+  return (
+    <SocialAuthButtons
+      defaultProvider="google"
+      label={label}
+      providers={providers}
+    />
+  );
 }
 
-export function GitHubButton({ label = "Continue with GitHub" }: { label?: string }) {
-  return <SocialAuthButtons defaultProvider="github" label={label} />;
+export function GitHubButton({
+  label = "Continue with GitHub",
+  providers,
+}: Pick<SocialAuthProps, "label" | "providers">) {
+  return (
+    <SocialAuthButtons
+      defaultProvider="github"
+      label={label}
+      providers={providers}
+    />
+  );
 }
 
 export function SocialAuthButtons({
   label,
   defaultProvider = "github",
+  providers,
 }: SocialAuthProps) {
-  const [loadingProvider, setLoadingProvider] = useState<string | null>(null);
+  const [loadingProvider, setLoadingProvider] = useState<SocialProvider | null>(
+    null,
+  );
 
-  const googleConfigured = process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED === "true";
-  const githubConfigured = process.env.NEXT_PUBLIC_GITHUB_AUTH_ENABLED === "true";
-
-  async function handleSocial(provider: "google" | "github") {
-    const configured = provider === "github" ? githubConfigured : googleConfigured;
-    if (!configured) {
-      const label = provider === "github" ? "GitHub" : "Google";
-      toast.info(`${label} sign-in is not configured yet. Use email and password for now.`);
+  async function handleSocial(provider: SocialProvider) {
+    if (!providers[provider]) {
+      const providerLabel = provider === "github" ? "GitHub" : "Google";
+      toast.info(
+        `${providerLabel} sign-in is not configured yet. Use email and password for now.`,
+      );
       return;
     }
 
@@ -88,9 +112,13 @@ export function SocialAuthButtons({
     }
   }
 
+  if (!providers.github && !providers.google) {
+    return null;
+  }
+
   return (
-    <div className="space-y-2.5">
-      <div className="grid gap-2">
+    <div className="grid gap-2">
+      {providers.github && (
         <Button
           type="button"
           variant="outline"
@@ -105,7 +133,9 @@ export function SocialAuthButtons({
           )}
           {label && defaultProvider === "github" ? label : "Continue with GitHub"}
         </Button>
+      )}
 
+      {providers.google && (
         <Button
           type="button"
           variant="outline"
@@ -120,12 +150,6 @@ export function SocialAuthButtons({
           )}
           {label && defaultProvider === "google" ? label : "Continue with Google"}
         </Button>
-      </div>
-
-      {!googleConfigured && !githubConfigured && (
-        <p className="px-1 text-center text-[0.68rem] leading-relaxed text-muted-foreground">
-          OAuth sign-in is optional. You can sign up or log in instantly with email and password below.
-        </p>
       )}
     </div>
   );

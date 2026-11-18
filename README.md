@@ -53,7 +53,12 @@ Open <http://localhost:3000>. The Express API must be running separately on port
 | `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED` | Set to `true` only after adding Google credentials |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Google OAuth credentials (optional) |
 
-GitHub and Google sign-in are optional and disabled by default. Without a matching public flag, the button explains that email/password should be used instead.
+GitHub and Google sign-in are optional. A provider button is shown only when its public flag is `true` **and** both matching credentials are set; otherwise email/password is used.
+
+Register these callback URLs on the OAuth apps (`BETTER_AUTH_URL` decides which origin is used):
+
+- GitHub: `http://localhost:3000/api/auth/callback/github` locally, `https://shahajjo-client.vercel.app/api/auth/callback/github` in production
+- Google: `http://localhost:3000/api/auth/callback/google` locally, `https://shahajjo-client.vercel.app/api/auth/callback/google` in production
 
 ### Scripts
 

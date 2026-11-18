@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { AuthShell } from "@/components/auth/auth-shell";
 import { LoginForm } from "@/components/auth/login-form";
 import { auth } from "@/lib/auth";
+import { getSocialProviderAvailability } from "@/lib/social-providers";
 
 export const metadata: Metadata = {
   title: "Log in",
@@ -34,7 +35,7 @@ export default async function LoginPage() {
       quoteBy="Sahajjo volunteer, Mirpur"
       footer="New to the neighbourhood?"
     >
-      <LoginForm />
+      <LoginForm providers={getSocialProviderAvailability()} />
     </AuthShell>
   );
 }

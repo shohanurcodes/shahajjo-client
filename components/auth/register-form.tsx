@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { clearTokenCache } from "@/lib/api";
 import { authClient } from "@/lib/auth-client";
 import { fallbackAvatar } from "@/lib/format";
+import type { SocialProviderAvailability } from "@/lib/social-providers";
 import { registerSchema, toFieldErrors } from "@/lib/validators";
 import { cn } from "@/lib/utils";
 
@@ -21,7 +22,11 @@ const passwordRules = [
   { key: "lower", label: "One lowercase letter", test: (value: string) => /[a-z]/.test(value) },
 ];
 
-export function RegisterForm() {
+export function RegisterForm({
+  providers,
+}: {
+  providers: SocialProviderAvailability;
+}) {
   const router = useRouter();
   const [form, setForm] = useState({
     name: "",
@@ -102,10 +107,12 @@ export function RegisterForm() {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-3">
-        <GoogleButton label="Sign up with Google" />
-        <AuthDivider />
-      </div>
+      {(providers.github || providers.google) && (
+        <div className="space-y-3">
+          <GoogleButton label="Sign up with Google" providers={providers} />
+          <AuthDivider />
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-4" noValidate>
         {formError && (

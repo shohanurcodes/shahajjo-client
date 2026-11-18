@@ -1,9 +1,15 @@
+
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { jwt } from "better-auth/plugins";
 import { MongoClient } from "mongodb";
+import {
+  getSocialProviderConfig,
+  type SocialProvider,
+} from "@/lib/social-providers";
 
-const mongoUri = process.env.MONGODB_URI ?? "mongodb://127.0.0.1:27017";
+const mongoUri =
+  process.env.MONGODB_URI ?? "mongodb://127.0.0.1:27017";
 
 declare global {
   var _mongoClient: MongoClient | undefined;
@@ -20,56 +26,42 @@ if (process.env.NODE_ENV !== "production") {
 const db = mongoClient.db(process.env.DB_NAME ?? "sahajjo");
 
 const vercelHost =
-  process.env.VERCEL_PROJECT_PRODUCTION_URL || process.env.VERCEL_URL;
+  process.env.VERCEL_PROJECT_PRODUCTION_URL ||
+  process.env.VERCEL_URL;
+
 const derivedBaseUrl =
   process.env.BETTER_AUTH_URL ||
   process.env.NEXT_PUBLIC_APP_URL ||
-  (vercelHost ? `https://${vercelHost}` : "http://localhost:3000");
+  (vercelHost
+    ? `https://${vercelHost}`
+    : "http://localhost:3000");
 
-// Detect GitHub OAuth credentials (supports explicit GITHUB_* or GOOGLE_* if user put GitHub Ov23 credentials there)
-const githubClientId =
-  process.env.GITHUB_CLIENT_ID ||
-  (process.env.GOOGLE_CLIENT_ID?.startsWith("Ov23")
-    ? process.env.GOOGLE_CLIENT_ID
-    : undefined);
-const githubClientSecret =
-  process.env.GITHUB_CLIENT_SECRET ||
-  (process.env.GOOGLE_CLIENT_ID?.startsWith("Ov23")
-    ? process.env.GOOGLE_CLIENT_SECRET
-    : undefined);
+const socialProviders: Partial<
+  Record<SocialProvider, { clientId: string; clientSecret: string }>
+> = {};
 
-const githubEnabled = Boolean(githubClientId && githubClientSecret);
+for (const provider of ["github", "google"] as const) {
+  const config = getSocialProviderConfig(provider);
 
-const googleClientId = !process.env.GOOGLE_CLIENT_ID?.startsWith("Ov23")
-  ? process.env.GOOGLE_CLIENT_ID
-  : undefined;
-const googleClientSecret = !process.env.GOOGLE_CLIENT_ID?.startsWith("Ov23")
-  ? process.env.GOOGLE_CLIENT_SECRET
-  : undefined;
-
-const googleEnabled = Boolean(googleClientId && googleClientSecret);
-
-const socialProviders: Record<string, { clientId: string; clientSecret: string }> = {};
-if (githubEnabled && githubClientId && githubClientSecret) {
-  socialProviders.github = {
-    clientId: githubClientId,
-    clientSecret: githubClientSecret,
-  };
-}
-if (googleEnabled && googleClientId && googleClientSecret) {
-  socialProviders.google = {
-    clientId: googleClientId,
-    clientSecret: googleClientSecret,
-  };
+  if (config) {
+    socialProviders[provider] = config;
+  }
 }
 
 export const auth = betterAuth({
   appName: "Sahajjo",
+
   baseURL: derivedBaseUrl,
+
   secret:
     process.env.BETTER_AUTH_SECRET ??
     "development-only-secret-please-set-better-auth-secret",
-  database: mongodbAdapter(db, { client: mongoClient, transaction: false }),
+
+  database: mongodbAdapter(db, {
+    client: mongoClient,
+    transaction: false,
+  }),
+
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 6,
@@ -77,11 +69,23 @@ export const auth = betterAuth({
     requireEmailVerification: false,
     autoSignIn: true,
   },
+
+  // Google and GitHub account linking
+  account: {
+    accountLinking: {
+      enabled: true,
+      trustedProviders: ["google", "github"],
+      allowDifferentEmails: false,
+    },
+  },
+
   socialProviders,
+
   session: {
     expiresIn: 60 * 60 * 24 * 7,
     updateAge: 60 * 60 * 24,
   },
+
   trustedOrigins: Array.from(
     new Set(
       [
@@ -95,6 +99,7 @@ export const auth = betterAuth({
       ].filter((origin): origin is string => Boolean(origin)),
     ),
   ),
+
   plugins: [
     jwt({
       jwt: {

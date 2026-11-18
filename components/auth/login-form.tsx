@@ -11,9 +11,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { clearTokenCache } from "@/lib/api";
 import { authClient } from "@/lib/auth-client";
+import type { SocialProviderAvailability } from "@/lib/social-providers";
 import { loginSchema, toFieldErrors } from "@/lib/validators";
 
-export function LoginForm() {
+export function LoginForm({
+  providers,
+}: {
+  providers: SocialProviderAvailability;
+}) {
   const router = useRouter();
   const [form, setForm] = useState({ email: "", password: "" });
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -78,10 +83,12 @@ export function LoginForm() {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-3">
-        <GoogleButton label="Continue with Google" />
-        <AuthDivider />
-      </div>
+      {(providers.github || providers.google) && (
+        <div className="space-y-3">
+          <GoogleButton label="Continue with Google" providers={providers} />
+          <AuthDivider />
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-4" noValidate>
         {formError && (

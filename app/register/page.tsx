@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { AuthShell } from "@/components/auth/auth-shell";
 import { RegisterForm } from "@/components/auth/register-form";
 import { auth } from "@/lib/auth";
+import { getSocialProviderAvailability } from "@/lib/social-providers";
 
 export const metadata: Metadata = {
   title: "Join Sahajjo",
@@ -34,7 +35,7 @@ export default async function RegisterPage() {
       quoteBy="Sahajjo volunteer, Dhanmondi"
       footer="Already part of the community?"
     >
-      <RegisterForm />
+      <RegisterForm providers={getSocialProviderAvailability()} />
     </AuthShell>
   );
 }

@@ -15,7 +15,7 @@ Sahajjo is a community-driven platform for social service events in Dhaka. Neigh
 - **Keep your own calendar** of joined events, split into upcoming plans and events that already happened.
 - **Update your profile** — display name and photo — and see how many events you have created, joined and still have ahead.
 - **Switch between light and dark themes** anywhere in the app, with a responsive layout from phone to desktop.
-- **Sign in with email and password, GitHub, or Google** (social options activate when their OAuth credentials and public flags are provided), with toast feedback for every success and failure.
+- **Sign in with email and password, GitHub, or Google** (social options activate automatically when their OAuth credentials are set), with toast feedback for every success and failure.
 
 ## Tech stack
 
